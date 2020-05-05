@@ -32,6 +32,13 @@ typedef struct Code {
 
 Code code[CODE_MAX_SIZE];
 
+void print_code() {
+  int i;
+  for (i = 0; strcmp(code[i].op, OP_END); i++) {
+    printf("%s\t%d\n", code[i].op, code[i].diff);
+  }
+}
+
 void delete_from_to(int start, int end) {
   int i;
   for (i = start;; i++) {

@@ -37,10 +37,6 @@ int load(FILE *fp) {
     i++;
   }
   strcpy(code[i].op, OP_END);
-  for (i = 0; strcmp(code[i].op, OP_END); i++) {
-    printf("%s\t%d\n", code[i].op, code[i].diff);
-  }
   fclose(fp);
-  puts("");
   return EXIT_SUCCESS;
 }
