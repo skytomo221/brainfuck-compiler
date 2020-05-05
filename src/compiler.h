@@ -3,8 +3,7 @@
 #define COMPILER_H
 
 /* AtCoder 512 KiB */
-#define CODE_MAX_SIZE 262144
-/* I want to set 524288 but it caused out of memory. So, it is 262144 */
+#define CODE_MAX_SIZE 524288
 
 #define TOKEN_PLUS '+'
 #define TOKEN_MINUS '-'
@@ -33,12 +32,11 @@ typedef struct Code {
 
 Code code[CODE_MAX_SIZE];
 
-void replace(Code *old, Code *new) {
-  puts("OK");
+void delete_from_to(int start, int end) {
   int i;
-  for (i = 0;; i++) {
-    old[i] = new[i];
-    if (!strcmp(new[i].op, OP_END)) break;
+  for (i = start;; i++) {
+    code[i] = code[i + end - start + 1];
+    if (!strcmp(code[i].op, OP_END)) break;
   }
 }
 
