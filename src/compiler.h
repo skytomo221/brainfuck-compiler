@@ -23,6 +23,7 @@
 #define OP_LOOP_START "["
 #define OP_LOOP_END "]"
 #define OP_END "end"
+#define OP_ASSIGNMENT "="
 
 /* Brainfuck source code */
 typedef struct Code {

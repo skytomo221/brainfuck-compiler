@@ -52,3 +52,13 @@ sys     0m0.031s
 出力したソースコード
 125369 bytes
 4125 lines
+
+## 最適化2
+
+real    0m1.897s
+user    0m1.297s
+sys     0m0.000s
+
+出力したソースコード
+117065 bytes
+3849 lines

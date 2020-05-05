@@ -22,25 +22,25 @@ int gencode(FILE *fp) {
       if (code[i].diff == 1) {
         fprintf(fp, "(*ptr)++;");
       } else {
-        fprintf(fp, "(*ptr)+=%d;", code[i].diff);
+        fprintf(fp, "(*ptr) += %d;", code[i].diff);
       }
     } else if (!strcmp(code[i].op, OP_MINUS)) {
       if (code[i].diff == 1) {
         fprintf(fp, "(*ptr)--;");
       } else {
-        fprintf(fp, "(*ptr)-=%d;", code[i].diff);
+        fprintf(fp, "(*ptr) -= %d;", code[i].diff);
       }
     } else if (!strcmp(code[i].op, OP_PREVIOUS)) {
       if (code[i].diff == 1) {
         fprintf(fp, "ptr--;");
       } else {
-        fprintf(fp, "ptr-=%d;", code[i].diff);
+        fprintf(fp, "ptr -= %d;", code[i].diff);
       }
     } else if (!strcmp(code[i].op, OP_NEXT)) {
       if (code[i].diff == 1) {
         fprintf(fp, "ptr++;");
       } else {
-        fprintf(fp, "ptr+=%d;", code[i].diff);
+        fprintf(fp, "ptr += %d;", code[i].diff);
       }
     } else if (!strcmp(code[i].op, OP_OUTPUT)) {
       fprintf(fp, "putchar(*ptr);");
@@ -51,6 +51,8 @@ int gencode(FILE *fp) {
       fprintf(fp, "while (*ptr) {");
     } else if (!strcmp(code[i].op, OP_LOOP_END)) {
       fprintf(fp, "}");
+    } else if (!strcmp(code[i].op, OP_ASSIGNMENT)) {
+      fprintf(fp, "(*ptr) = %d;", code[i].diff);
     }
     fputs("\n", fp);
   }
