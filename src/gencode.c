@@ -19,13 +19,29 @@ int gencode(FILE *fp) {
       fputs("    ", fp);
     }
     if (!strcmp(code[i].op, OP_PLUS)) {
-      fprintf(fp, "(*ptr)++;");
+      if (code[i].diff == 1) {
+        fprintf(fp, "(*ptr)++;");
+      } else {
+        fprintf(fp, "(*ptr)+=%d;", code[i].diff);
+      }
     } else if (!strcmp(code[i].op, OP_MINUS)) {
-      fprintf(fp, "(*ptr)--;");
+      if (code[i].diff == 1) {
+        fprintf(fp, "(*ptr)--;");
+      } else {
+        fprintf(fp, "(*ptr)-=%d;", code[i].diff);
+      }
     } else if (!strcmp(code[i].op, OP_PREVIOUS)) {
-      fprintf(fp, "ptr--;");
+      if (code[i].diff == 1) {
+        fprintf(fp, "ptr--;");
+      } else {
+        fprintf(fp, "ptr-=%d;", code[i].diff);
+      }
     } else if (!strcmp(code[i].op, OP_NEXT)) {
-      fprintf(fp, "ptr++;");
+      if (code[i].diff == 1) {
+        fprintf(fp, "ptr++;");
+      } else {
+        fprintf(fp, "ptr+=%d;", code[i].diff);
+      }
     } else if (!strcmp(code[i].op, OP_OUTPUT)) {
       fprintf(fp, "putchar(*ptr);");
     } else if (!strcmp(code[i].op, OP_INPUT)) {
