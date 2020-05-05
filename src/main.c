@@ -22,7 +22,8 @@ int main(int argc, char *argv[]) {
         file[strlen(argv[i]) - 3] = '\0';
         sprintf(s, "%s.c", file);
         gencode(fopen(s, "w"));
-        sprintf(s, "gcc -o %s.out %s.c", file, file);
+        sprintf(s, "gcc -std=gnu11 -O2 -DONLINE_JUDGE -o %s.out %s.c -lm", file,
+                file);
         system(s);
         sprintf(s, "rm %s.c", file);
         system(s);
