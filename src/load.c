@@ -1,4 +1,6 @@
 
+#include "compiler.h"
+
 int load(FILE *fp) {
   int i = 0;
   int c;
@@ -37,6 +39,7 @@ int load(FILE *fp) {
     i++;
   }
   strcpy(code[i].op, OP_END);
+  look_up_loop();
   fclose(fp);
   return EXIT_SUCCESS;
 }
