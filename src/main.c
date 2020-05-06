@@ -27,8 +27,9 @@ int main(int argc, char *argv[]) {
         sprintf(s, "gcc -std=gnu11 -O2 -DONLINE_JUDGE -o %s.out %s.c -lm", file,
                 file);
         system(s);
-        sprintf(s, "rm %s.c", file);
-        system(s);
+        // print_code();
+        // sprintf(s, "rm %s.c", file);
+        // system(s);
       }
       i++;
     }

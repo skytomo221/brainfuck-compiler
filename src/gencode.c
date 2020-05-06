@@ -53,6 +53,18 @@ int gencode(FILE *fp) {
       fprintf(fp, "}");
     } else if (!strcmp(code[i].op, OP_ASSIGNMENT)) {
       fprintf(fp, "(*ptr) = %d;", code[i].diff);
+    } else if (!strcmp(code[i].op, OP_PUTCHAR)) {
+      switch (code[i].diff) {
+        case '\n':
+          fputs("putchar('\\n');", fp);
+          break;
+        case '\t':
+          fputs("putchar('\\t');", fp);
+          break;
+        default:
+          fprintf(fp, "putchar('%c');", code[i].diff);
+          break;
+      }
     }
     fputs("\n", fp);
   }
