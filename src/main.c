@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,7 +28,11 @@ int main(int argc, char *argv[]) {
         gencode(fopen(s, "w"));
         sprintf(s, "gcc -std=gnu11 -O2 -DONLINE_JUDGE -o %s.out %s.c -lm", file,
                 file);
-        system(s);
+        if (system(s) == -1) {
+          printf("brainfuck-compiler: \033[31merror:\033[39m %s\n",
+                 strerror(errno));
+          return EXIT_FAILURE;
+        };
         // print_code();
         // sprintf(s, "rm %s.c", file);
         // system(s);
