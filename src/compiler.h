@@ -80,17 +80,18 @@ CodeList *code_list_init() {
 }
 
 int code_list_count_tape_size(CodeList *code_list) {
-  int cnt = 1;
+  int cnt = 1, max_cnt = 1;
   Code *code = code_list->head;
   while (code != NULL) {
     if (!strcmp(code->op, OP_NEXT)) {
       cnt++;
+      if (max_cnt < cnt) max_cnt = cnt;
     } else if (!strcmp(code->op, OP_PREVIOUS)) {
       cnt--;
     }
     code = code->next;
   }
-  return code_list->tape_size = cnt;
+  return code_list->tape_size = max_cnt;
 }
 
 void code_check(CodeList *code_list) {

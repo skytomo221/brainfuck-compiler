@@ -3,58 +3,61 @@
 
 #include "compiler.h"
 
-char head[] =
+char head1[] =
     "#include <stdio.h>\n#include <stdint.h>\n#include <stdlib.h>\n\nint "
-    "main(void)\n{\n    uint8_t mem[524288] = {0};\n    uint8_t* ptr = mem;\n";
-char tail[] = "}\n";
+    "main(void)\n{\n    uint8_t tape[";
+char head2[] = "] = {0};\n    uint8_t* ptr = tape;\n";
+char tail[] = "\n    return 0;\n}\n";
 
 int gencode(FILE *fp) {
-  int i, j;
-  int tab = 1;
+  int i, tab = 1;
+  Code *code = code_list->head;
   if (fp == NULL) return EXIT_FAILURE;
-  fputs(head, fp);
-  for (i = 0; strcmp(code[i].op, OP_END); i++) {
-    if (!strcmp(code[i].op, OP_LOOP_END)) tab--;
-    for (j = 0; j < tab; j++) {
+  fputs(head1, fp);
+  fprintf(fp, "%d", code_list->tape_size);
+  fputs(head2, fp);
+  while (code != NULL) {
+    if (!strcmp(code->op, OP_LOOP_END)) tab--;
+    for (i = 0; i < tab; i++) {
       fputs("    ", fp);
     }
-    if (!strcmp(code[i].op, OP_PLUS)) {
-      if (code[i].diff == 1) {
+    if (!strcmp(code->op, OP_PLUS)) {
+      if (code->diff == 1) {
         fprintf(fp, "(*ptr)++;");
       } else {
-        fprintf(fp, "(*ptr) += %d;", code[i].diff);
+        fprintf(fp, "(*ptr) += %d;", code->diff);
       }
-    } else if (!strcmp(code[i].op, OP_MINUS)) {
-      if (code[i].diff == 1) {
+    } else if (!strcmp(code->op, OP_MINUS)) {
+      if (code->diff == 1) {
         fprintf(fp, "(*ptr)--;");
       } else {
-        fprintf(fp, "(*ptr) -= %d;", code[i].diff);
+        fprintf(fp, "(*ptr) -= %d;", code->diff);
       }
-    } else if (!strcmp(code[i].op, OP_PREVIOUS)) {
-      if (code[i].diff == 1) {
+    } else if (!strcmp(code->op, OP_PREVIOUS)) {
+      if (code->diff == 1) {
         fprintf(fp, "ptr--;");
       } else {
-        fprintf(fp, "ptr -= %d;", code[i].diff);
+        fprintf(fp, "ptr -= %d;", code->diff);
       }
-    } else if (!strcmp(code[i].op, OP_NEXT)) {
-      if (code[i].diff == 1) {
+    } else if (!strcmp(code->op, OP_NEXT)) {
+      if (code->diff == 1) {
         fprintf(fp, "ptr++;");
       } else {
-        fprintf(fp, "ptr += %d;", code[i].diff);
+        fprintf(fp, "ptr += %d;", code->diff);
       }
-    } else if (!strcmp(code[i].op, OP_OUTPUT)) {
+    } else if (!strcmp(code->op, OP_OUTPUT)) {
       fprintf(fp, "putchar(*ptr);");
-    } else if (!strcmp(code[i].op, OP_INPUT)) {
+    } else if (!strcmp(code->op, OP_INPUT)) {
       fprintf(fp, "*ptr = getchar();");
-    } else if (!strcmp(code[i].op, OP_LOOP_START)) {
+    } else if (!strcmp(code->op, OP_LOOP_START)) {
       tab++;
       fprintf(fp, "while (*ptr) {");
-    } else if (!strcmp(code[i].op, OP_LOOP_END)) {
+    } else if (!strcmp(code->op, OP_LOOP_END)) {
       fprintf(fp, "}");
-    } else if (!strcmp(code[i].op, OP_ASSIGNMENT)) {
-      fprintf(fp, "(*ptr) = %d;", code[i].diff);
-    } else if (!strcmp(code[i].op, OP_PUTCHAR)) {
-      switch (code[i].diff) {
+    } else if (!strcmp(code->op, OP_ASSIGNMENT)) {
+      fprintf(fp, "(*ptr) = %d;", code->diff);
+    } else if (!strcmp(code->op, OP_PUTCHAR)) {
+      switch (code->diff) {
         case '\n':
           fputs("putchar('\\n');", fp);
           break;
@@ -62,11 +65,12 @@ int gencode(FILE *fp) {
           fputs("putchar('\\t');", fp);
           break;
         default:
-          fprintf(fp, "putchar('%c');", code[i].diff);
+          fprintf(fp, "putchar('%c');", code->diff);
           break;
       }
     }
     fputs("\n", fp);
+    code = code->next;
   }
   fputs(tail, fp);
   fclose(fp);

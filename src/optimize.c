@@ -127,9 +127,9 @@ void optimize_3() {
       new_code_ptr->diff = (*ptr);
       new_code_ptr++;
     } else if (!strcmp(code[i].op, OP_LOOP_START)) {
-      if ((*ptr) == 0) i = code[i].loop;
+      // if ((*ptr) == 0) i = code[i].loop;
     } else if (!strcmp(code[i].op, OP_LOOP_END)) {
-      if ((*ptr) != 0) i = code[i].loop;
+      // if ((*ptr) != 0) i = code[i].loop;
     } else if (!strcmp(code[i].op, OP_ASSIGNMENT)) {
       (*ptr) = code[i].diff;
     }
@@ -147,9 +147,9 @@ void optimize_3() {
 
 void optimize() {
   optimize_1();
-  look_up_loop();
+  // look_up_loop();
   optimize_2();
-  look_up_loop();
+  // look_up_loop();
   // optimize_3();
   // look_up_loop();
 }
