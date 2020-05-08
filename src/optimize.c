@@ -3,61 +3,64 @@
 
 #include "compiler.h"
 
-void optimize_1() {
-  int i, j;
-  for (i = 0; strcmp(code[i].op, OP_END); i++) {
-    j = i;
-    if (!strcmp(code[j].op, OP_PLUS) || !strcmp(code[j].op, OP_MINUS)) {
-      j++;
-      if (strcmp(code[j].op, OP_PLUS) && strcmp(code[j].op, OP_MINUS)) continue;
-      if (!strcmp(code[i].op, OP_MINUS)) {
-        strcpy(code[i].op, OP_PLUS);
-        code[i].diff *= -1;
-      }
-      while (!strcmp(code[j].op, OP_PLUS) || !strcmp(code[j].op, OP_MINUS)) {
-        if (!strcmp(code[j].op, OP_PLUS)) {
-          (code[i].diff)++;
-        } else {
-          (code[i].diff)--;
-        }
-        j++;
-      }
-      if (code[i].diff < 0) {
-        strcpy(code[i].op, OP_MINUS);
-      } else {
-        strcpy(code[i].op, OP_PLUS);
-      }
-      code[i].diff = abs(code[i].diff);
-      delete_from_to(i + 1, j - 1);
+int count_consecutive_times(Code *code, char *plus, char *minus) {
+  int cnt = 0;
+  while (code != NULL) {
+    if (!strcmp(code->op, plus)) {
+      cnt++;
+    } else if (!strcmp(code->op, minus)) {
+      cnt--;
+    } else {
+      return cnt;
     }
-    j = i;
-    if (!strcmp(code[j].op, OP_NEXT) || !strcmp(code[j].op, OP_PREVIOUS)) {
-      j++;
-      if (strcmp(code[j].op, OP_NEXT) && strcmp(code[j].op, OP_PREVIOUS))
-        continue;
-      if (!strcmp(code[i].op, OP_PREVIOUS)) {
-        strcpy(code[i].op, OP_NEXT);
-        code[i].diff *= -1;
-      }
-      while (!strcmp(code[j].op, OP_NEXT) || !strcmp(code[j].op, OP_PREVIOUS)) {
-        if (!strcmp(code[j].op, OP_NEXT)) {
-          (code[i].diff)++;
-        } else {
-          (code[i].diff)--;
-        }
-        j++;
-      }
-      if (code[i].diff < 0) {
-        strcpy(code[i].op, OP_PREVIOUS);
-      } else {
-        strcpy(code[i].op, OP_NEXT);
-      }
-      code[i].diff = abs(code[i].diff);
-      delete_from_to(i + 1, j - 1);
-    }
+    code = code->next;
   }
+  return cnt;
 }
 
+void first_optimize() {
+  int i, cnt;
+  Code next;
+  Code *code = code_list->head;
+  CodeList *new_code_list;
+  new_code_list = code_list_init();
+  while (code != NULL) {
+    if (!strcmp(code->op, OP_PLUS) || !strcmp(code->op, OP_MINUS)) {
+      cnt = count_consecutive_times(code, OP_PLUS, OP_MINUS);
+      if (cnt < 0)
+        strcpy(next.op, OP_MINUS);
+      else
+        strcpy(next.op, OP_PLUS);
+      next.diff = cnt = abs(cnt);
+      code_list_add(new_code_list, next);
+      for (i = 0; i < cnt - 1; i++) {
+        code = code->next;
+      }
+    } else if (!strcmp(code->op, OP_NEXT) || !strcmp(code->op, OP_PREVIOUS)) {
+      cnt = count_consecutive_times(code, OP_NEXT, OP_PREVIOUS);
+      if (cnt < 0)
+        strcpy(next.op, OP_PREVIOUS);
+      else
+        strcpy(next.op, OP_NEXT);
+      next.diff = cnt = abs(cnt);
+      code_list_add(new_code_list, next);
+      for (i = 0; i < cnt - 1; i++) {
+        code = code->next;
+      }
+    } else {
+      strcpy(next.op, code->op);
+      next.diff = code->diff;
+      code_list_add(new_code_list, next);
+    }
+    code = code->next;
+  }
+  code_list_look_up_loop(new_code_list);
+  code_list = new_code_list;
+}
+
+      delete_from_to(i + 1, j - 1);
+
+/*
 void optimize_2() {
   int i;
   if (strcmp(code[0].op, OP_END) && strcmp(code[1].op, OP_END) &&
@@ -135,7 +138,7 @@ void optimize_3() {
     }
     /*printf("i:%d\top:%s\tdiff:%d\tptr:%lx\t(*ptr):%d\n", i, code[i].op,
            code[i].diff, ptr - tape, (*ptr));*/
-  }
+/*  }
   strcpy(new_code_ptr->op, OP_END);
   for (i = 0; strcmp(new_code[i].op, OP_END); i++) {
     code[i] = new_code[i];
@@ -144,11 +147,12 @@ void optimize_3() {
   // free(tape);
   // free(new_code);
 }
+*/
 
 void optimize() {
-  optimize_1();
-  // look_up_loop();
-  optimize_2();
+  first_optimize();
+  code_list_look_up_loop(code_list);
+  // optimize_2();
   // look_up_loop();
   // optimize_3();
   // look_up_loop();

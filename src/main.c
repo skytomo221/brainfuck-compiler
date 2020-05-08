@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "error: failed to read file %s\n", argv[i]);
       } else {
         // code_list_print(code_list);
-        // optimize();
+        optimize();
         strncpy(file, argv[i], strlen(argv[i]) - 3);
         file[strlen(argv[i]) - 3] = '\0';
         sprintf(s, "%s.c", file);

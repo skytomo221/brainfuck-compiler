@@ -3,19 +3,17 @@
 
 #include "compiler.h"
 
-char head1[] =
+char head[] =
     "#include <stdio.h>\n#include <stdint.h>\n#include <stdlib.h>\n\nint "
-    "main(void)\n{\n    uint8_t tape[";
-char head2[] = "] = {0};\n    uint8_t* ptr = tape;\n";
+    "main(void)\n{\n    uint8_t tape[524288] = {0};\n    uint8_t* ptr = "
+    "tape;\n";
 char tail[] = "\n    return 0;\n}\n";
 
 int gencode(FILE *fp) {
   int i, tab = 1;
   Code *code = code_list->head;
   if (fp == NULL) return EXIT_FAILURE;
-  fputs(head1, fp);
-  fprintf(fp, "%d", code_list->tape_size);
-  fputs(head2, fp);
+  fputs(head, fp);
   while (code != NULL) {
     if (!strcmp(code->op, OP_LOOP_END)) tab--;
     for (i = 0; i < tab; i++) {
